@@ -80,7 +80,7 @@ const {Howl, Howler} = require('howler');
       playlist: state => state.playlist
     }),
     data: () => ({
-      drawer: true,
+      drawer: false,
       howl: null,
       index: 0,
       playicon: 'mdi-play'
