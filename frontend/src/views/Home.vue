@@ -1,22 +1,5 @@
 <template>
   <div>
-    <!--
-    <v-card v-if="artists">
-    <v-list dense>
-        <v-list-item-group v-model="item" color="primary">
-          <v-list-item
-            v-for="artist in artists"
-            :key="artist.artistid"
-            :to="{path:'/artist/'+artist.artistid}" 
-          >
-            <v-list-item-content>
-              <v-list-item-title v-text="artist.name"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
-  -->
     <v-container class="ma-1">
       <v-layout row wrap>
         <v-flex v-for="a in letters" :key="a.key" xs6 md4>
@@ -28,8 +11,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
-//import HelloWorld from '@/components/HelloWorld.vue'
 import ArtistService from '../api/artist.js'
 
 function processResponse(response) {
@@ -72,6 +53,7 @@ export default {
           { label: 'Y', key: 'y' },
           { label: 'Z', key: 'z' },
           { label: '...', key: 'other' },
+          { label: '*', key: 'all' },
         ]
       }
     },
