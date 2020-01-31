@@ -1,6 +1,5 @@
 FROM node:buster-slim
 RUN apt-get -y update
-RUN yarn global add @vue/cli -g
 RUN apt-get autoremove -y \
     && apt-get autoclean -y \
     && apt-get clean -y \
@@ -8,5 +7,5 @@ RUN apt-get autoremove -y \
 
 EXPOSE 8080
 USER node
-WORKDIR /frontend
+WORKDIR /backend
 CMD [ "yarn", "serve" ]
