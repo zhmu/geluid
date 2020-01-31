@@ -2,7 +2,7 @@
   <div>
     <v-container class="ma-1">
       <v-layout row wrap>
-        <v-flex v-for="a in letters" :key="a.key" xs6 md4>
+        <v-flex v-for="a in letters" :key="a.key" xs6 md4 pa-1>
           <v-btn outlined block :to="{path: '/artist/by/'+a.key}">{{ a.label }}</v-btn>
         </v-flex>
       </v-layout>
