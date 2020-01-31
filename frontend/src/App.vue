@@ -110,6 +110,7 @@ const {Howl, Howler} = require('howler');
         this.howl = new Howl({
           src: [`/api/file/${track.trackid}/mp3`],
           format: [ 'mp3' ],
+          html5: true,
           onend: () => { this.next() }
         })
         this.howl.play()
