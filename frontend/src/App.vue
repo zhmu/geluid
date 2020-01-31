@@ -7,8 +7,9 @@
     >
       <v-list dense>
         <v-list-item link v-for="(item, n) in playlist" :key="n" :class="[{selected: n == index}]">
-          <v-list-item-content>
-            <v-list-item-title @click.stop="play(n)">{{ item.title }} / {{ item.artist }}</v-list-item-title>
+          <v-list-item-content @click.stop="play(n)">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ item.artist }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
