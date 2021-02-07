@@ -71,7 +71,7 @@
 
 <script>
 import { mapState } from 'vuex'
-const {Howl, Howler} = require('howler');
+const { Howl } = require('howler');
 
   export default {
     props: {

@@ -68,9 +68,7 @@ function processAlbum(response) {
           tracks.push({ 'trackid': t.trackid, 'artist': artist.name, 'title': t.title })
         })
     })
-    debugger
     return tracks
-
 }
 
 export default {
