@@ -14,7 +14,7 @@ services:
     networks:
     - internal
     volumes:
-    - ./backend:/backend
+    - ./js-backend:/backend
     - /nfs/geluid:/geluid
     restart: on-failure
     #entrypoint: [ "/bin/sh", "-c", "sleep 2073600" ]
