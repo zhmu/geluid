@@ -1,6 +1,13 @@
 const db = require('../db')
 const router = require('express').Router()
 
+router.get('/', (request, response) => {
+    db.query('SELECT artistid,name FROM artist', [], (error, results) => {
+        if (error) throw error
+        response.status(200).json(results.rows)
+    })
+})
+
 router.get('/by/:key', (request, response) => {
     const key = request.params.key
     let expr = {
@@ -30,8 +37,7 @@ router.get('/by/:key', (request, response) => {
         'x': "LOWER(name) LIKE 'x%'",
         'y': "LOWER(name) LIKE 'y%'",
         'z': "LOWER(name) LIKE 'z%'",
-        'other': "name !~ '^[a-zA-Z]'",
-        'all': "1=1"
+        'other': "name !~ '^[a-zA-Z]'"
     }
     if (!key in expr) throw "Unrecognised key"
     db.query('SELECT artistid,name FROM artist WHERE ' + expr[key], [], (error, results) => {
