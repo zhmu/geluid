@@ -1,0 +1,8 @@
+[global.databases]
+geluid_db = { url="postgres://geluid:geluid@pgsql/geluid" }
+
+[production]
+read_timeout = 0
+write_timeout = 0
+geluid_dir_prefix = "/nfs"
+static_files_path = "../frontend/dist"
