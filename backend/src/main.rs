@@ -77,7 +77,7 @@ struct Disc {
 #[derive(Serialize)]
 struct Album {
     albumid: i32,
-    year: i32,
+    year: Option<i32>,
     name: String,
     paid: bool,
     discs: Vec<Disc>
@@ -142,7 +142,7 @@ fn artist_id(conn: GeluidDbConn, id: i32) -> Json<ArtistInfo> {
     for row in &conn.query(&query, &[ &id ] ).unwrap() {
         let artistname: String = row.get("artistname");
         let albumid: i32 = row.get("albumid");
-        let year: i32 = row.get("year");
+        let year: Option<i32> = row.get("year");
         let name: String = row.get("name");
         let discid: i32 = row.get("discid");
         let volume: Option<String> = row.get("volume");
