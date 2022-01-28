@@ -5,9 +5,12 @@
 
 use rocket::State;
 use rocket::response::NamedFile;
-use rocket::fairing::AdHoc;
+use rocket::http::Header;
+use rocket::{Request, Response};
+use rocket::fairing::{AdHoc, Fairing, Info, Kind};
 use rocket_contrib::databases::postgres;
 use rocket_contrib::json::Json;
+use rocket_conditional_attach::ConditionalAttach;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use serde::Serialize;
@@ -272,9 +275,29 @@ fn track_mp3(conn: GeluidDbConn, geluid_dir_prefix: State<GeluidDirPrefix>, trac
     None
 }
 
+pub struct CORS;
+
+// This fairing allows the backend to be called from any site, which is useful for development
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Add CORS headers to responses",
+            kind: Kind::Response
+        }
+    }
+
+    fn on_response(&self, _request: &Request, response: &mut Response) {
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS"));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+    }
+}
+
 fn main() {
     rocket::ignite()
         .attach(GeluidDbConn::fairing())
+        .attach_if(cfg!(debug_assertions), CORS)
         .attach(AdHoc::on_attach("geluid dir prefix", |rocket| {
             let geluid_dir_prefix = rocket.config().get_str("geluid_dir_prefix").unwrap().to_string();
             Ok(rocket.manage(GeluidDirPrefix(geluid_dir_prefix)))

@@ -6,3 +6,9 @@ read_timeout = 0
 write_timeout = 0
 geluid_dir_prefix = "/nfs"
 static_files_path = "../frontend/dist"
+
+[development]
+read_timeout = 0
+write_timeout = 0
+geluid_dir_prefix = "/nfs"
+static_files_path = "../frontend/dist"

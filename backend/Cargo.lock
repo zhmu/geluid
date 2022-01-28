@@ -352,6 +352,7 @@ name = "geluid-backend"
 version = "0.1.0"
 dependencies = [
  "rocket",
+ "rocket_conditional_attach",
  "rocket_contrib",
  "serde",
 ]
@@ -1053,6 +1054,15 @@ dependencies = [
  "rocket_http",
  "version_check 0.9.2",
  "yansi",
+]
+
+[[package]]
+name = "rocket_conditional_attach"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "267d8c3a990a5c34388f73642b13b85dd0446fa2428bcb572f71a25d6294add9"
+dependencies = [
+ "rocket",
 ]
 
 [[package]]
