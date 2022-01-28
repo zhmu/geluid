@@ -1,15 +1,16 @@
 import Axios from 'axios'
+import { config } from '../config.js'
 
-const RESOURCE_NAME = '/api/artist'
+const RESOURCE_NAME = config.$api_url + '/artist'
 
-export default {               
+export default {
 	getAll() {
-			return Axios.get(RESOURCE_NAME) 
+			return Axios.get(RESOURCE_NAME)
 	},
 	getBy(key) {
 			return Axios.get(RESOURCE_NAME + '/by/' + key)
 	},
-	get(id) {     
+	get(id) {
 			return Axios.get(RESOURCE_NAME + '/' + id)
 	}
 }
