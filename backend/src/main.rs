@@ -262,8 +262,7 @@ fn track_enqueue(conn: GeluidDbConn, track_id: i32) -> Json<TrackEnqueue> {
     Json(enqueue)
 }
 
-// TODO this is wrong; should be track/.../mp3
-#[get("/file/<track_id>/mp3")]
+#[get("/track/<track_id>/mp3")]
 fn track_mp3(conn: GeluidDbConn, geluid_dir_prefix: State<GeluidDirPrefix>, track_id: i32) -> Option<NamedFile> {
     let query = "SELECT path FROM file WHERE trackid=$1 AND filetype='mp3'";
 
