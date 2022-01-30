@@ -274,6 +274,65 @@ fn track_mp3(conn: GeluidDbConn, geluid_dir_prefix: State<GeluidDirPrefix>, trac
     None
 }
 
+#[derive(Serialize)]
+struct SearchAlbumResult {
+    albumid: i32,
+    year: Option<i32>,
+    artist: String,
+    name: String,
+}
+
+#[derive(Serialize)]
+struct SearchTrackResult {
+    trackid: i32,
+    year: Option<i32>,
+    artist: String,
+    album: String,
+    title: String,
+}
+
+#[derive(Serialize)]
+struct SearchResult {
+    artists: Vec<Artist>,
+    albums: Vec<SearchAlbumResult>,
+    tracks: Vec<SearchTrackResult>,
+}
+
+#[get("/search/<needle>")]
+fn search(conn: GeluidDbConn, needle: String) -> Json<SearchResult> {
+    let mut result = SearchResult{ artists: Vec::new(), albums: Vec::new(), tracks: Vec::new() };
+
+    // Artists
+    let query = "SELECT artistid,name FROM artist WHERE name ILIKE CONCAT('%',CAST($1 AS VARCHAR),'%')";
+    for row in &conn.query(&query, &[ &needle ] ).unwrap() {
+        let artist_id: i32 = row.get("artistid");
+        let artist_name: String = row.get("name");
+        result.artists.push(Artist{ artistid: artist_id, name: artist_name } );
+    }
+
+    // Albums
+    let query = "SELECT ar.name AS artist,al.albumid,al.year,al.name FROM artist ar,album al WHERE al.name ILIKE CONCAT('%',CAST($1 AS VARCHAR),'%') AND ar.artistid=al.artistid";
+    for row in &conn.query(&query, &[ &needle ] ).unwrap() {
+        let artist: String = row.get("artist");
+        let albumid: i32 = row.get("albumid");
+        let year: Option<i32> = row.get("year");
+        let name: String = row.get("name");
+        result.albums.push(SearchAlbumResult{ albumid, year, artist, name })
+    }
+
+    // Tracks
+    let query = "SELECT t.trackid,t.title,al.year,ar.name AS artist,al.name AS album FROM track t,album al,artist ar,disc d WHERE t.discid=d.discid AND d.albumid=al.albumid AND al.artistid=ar.artistid AND t.title ILIKE CONCAT('%',CAST($1 AS VARCHAR),'%')";
+    for row in &conn.query(&query, &[ &needle ] ).unwrap() {
+        let trackid: i32 = row.get("trackid");
+        let year: Option<i32> = row.get("year");
+        let artist: String = row.get("artist");
+        let album: String = row.get("album");
+        let title: String = row.get("title");
+        result.tracks.push(SearchTrackResult{ trackid, year, artist, album, title });
+    }
+    Json(result)
+}
+
 pub struct CORS;
 
 // This fairing allows the backend to be called from any site, which is useful for development
@@ -306,6 +365,6 @@ fn main() {
             Ok(rocket.manage(StaticFilesPath(static_files_path)))
         }))
         .mount("/", routes![ index, get_file ])
-        .mount("/api", routes![index, artist_key, artist_id, album_id, track_lyrics, track_enqueue, track_mp3 ])
+        .mount("/api", routes![index, artist_key, artist_id, album_id, track_lyrics, track_enqueue, track_mp3, search ])
         .launch();
 }
