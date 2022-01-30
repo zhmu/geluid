@@ -23,7 +23,10 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click="playpause"><v-icon>{{ playicon }}</v-icon></v-btn>
       <v-btn icon @click="clearplaylist"><v-icon>mdi-playlist-remove</v-icon></v-btn>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">Geluid</v-toolbar-title>
+      <v-spacer />
+      <v-text-field dense style="width: 10px" v-model="needle" label="search"/>
+      <v-btn icon><v-icon>mdi-magnify</v-icon></v-btn>
     </v-app-bar>
 
     <v-content>
@@ -37,7 +40,7 @@
     </v-content>
 
     <v-footer app>
-      <span>&copy; 2020</span>
+      <span>&copy; 2020 - 2022</span>
     </v-footer>
   </v-app>
 </template>
@@ -84,10 +87,26 @@ const { Howl } = require('howler');
       drawer: false,
       howl: null,
       index: 0,
-      playicon: 'mdi-play'
+      playicon: 'mdi-play',
+      needle: '',
+      timer: null,
     }),
     created () {
       this.$vuetify.theme.dark = true
+    },
+    watch: {
+        needle: function(newVal) {
+            if(this.timer) clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                let r = this.$router.currentRoute.path;
+                let q = { path: '/search', query: { needle: newVal } };
+                if (r.startsWith('/search')) {
+                    this.$router.replace(q);
+                } else {
+                    this.$router.push(q);
+                }
+            }, 500);
+        }
     },
     methods: {
       stop() {
@@ -112,7 +131,9 @@ const { Howl } = require('howler');
           src: [this.$config.$api_url + `/track/${track.trackid}/mp3`],
           format: [ 'mp3' ],
           html5: true,
-          onend: () => { this.next() }
+          onend: () => { this.next() },
+          onloaderror: (a, b) => { alert('load error: ' + b) },
+          onplayerror: (a, b) => { alert('play error: ' + b) },
         })
         this.howl.play()
         this.playicon = 'mdi-pause'

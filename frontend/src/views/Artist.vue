@@ -46,31 +46,6 @@ function processResponse(response) {
       return { 'albums': albums, 'artist': artist }
 }
 
-function processAlbum(response) {
-    var album = response.data['album']
-    var artist = response.data['artist']
-
-    var discs = Object.values(album['discs'])
-    discs.sort((a, b) => {
-        if (a.volume != b.volume)
-          return a.volume - b.volume
-        if (a.title != b.title)
-          return a.title - b.title
-        return a.discid - b.discid
-    })
-    let tracks = [ ]
-    discs.forEach((a) => {
-        a.tracks.sort((a, b) => {
-          return a.num - b.num
-        })
-        a.tracks.forEach((t) => {
-          //this.$store.commit('queueTrack', { trackid, artist, title })
-          tracks.push({ 'trackid': t.trackid, 'artist': artist.name, 'title': t.title })
-        })
-    })
-    return tracks
-}
-
 export default {
     data() {
       return {
@@ -106,7 +81,7 @@ export default {
       },
       enqueue(albumid) {
         AlbumService.get(albumid).then((response) => {
-          let tracks = processAlbum(response)
+          let tracks = AlbumService.parseResponse(response);
           this.$store.commit('queueTracks', tracks)
         });
       }

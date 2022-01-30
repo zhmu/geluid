@@ -5,6 +5,7 @@ import Artist from '../views/Artist.vue'
 import ArtistBy from '../views/ArtistBy.vue'
 import Album from '../views/Album.vue'
 import Track from '../views/Track.vue'
+import Search from '../views/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -22,7 +23,8 @@ const routes = [
   { path: '/artist/:id', component: Artist },
   { path: '/artist/by/:key', component: ArtistBy },
   { path: '/album/:id', component: Album },
-  { path: '/track/:id', component: Track }
+  { path: '/track/:id', component: Track },
+  { path: '/search', component: Search },
 ]
 
 const router = new VueRouter({
